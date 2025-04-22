@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MaterialComponents.Dialog.MinWidth" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="android:minWidth">300dp</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <style name="CircleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="Theme.MiGym.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.MiGym.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.MiGym.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="CustomTimePickerStyle" parent="Widget.MaterialComponents.TimePicker">
+        <item name="materialTimePickerTitleStyle">@style/TimePickerTitleStyle</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TimePickerTitleStyle" parent="Widget.MaterialComponents.TimePicker.Display">
+        <item name="android:drawableStart">@null</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+</resources> 

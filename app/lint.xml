@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Disable some checks that are not critical for now -->
+    <issue id="UseAppTint" severity="warning" />
+    <issue id="UseCompatLoadingForColorStateLists" severity="warning" />
+    <issue id="UseCompatLoadingForDrawables" severity="warning" />
+    <issue id="UseCompatTextViewDrawableApis" severity="warning" />
+    <issue id="UseCompatTextViewDrawableXml" severity="warning" />
+    <issue id="UsingOnClickInXml" severity="warning" />
+    
+    <!-- Enable stricter checks for critical issues -->
+    <issue id="UseRequireInsteadOfGet" severity="error" />
+    <issue id="UseGetLayoutInflater" severity="error" />
+    <issue id="UseSwitchCompatOrMaterialCode" severity="error" />
+    <issue id="UseSwitchCompatOrMaterialXml" severity="error" />
+    <issue id="WorkerHasAPublicModifier" severity="error" />
+    
+    <!-- Ignore test sources -->
+    <issue id="all">
+        <ignore path="**/test/**" />
+        <ignore path="**/androidTest/**" />
+    </issue>
+</lint> 

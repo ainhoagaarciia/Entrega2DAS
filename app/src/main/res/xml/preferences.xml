@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.PreferenceCategory
+        android:title="@string/notification_settings"
+        android:icon="@null">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:key="enable_notifications"
+            android:title="@string/notifications_enabled"
+            android:defaultValue="true"
+            android:icon="@null" />
+
+        <androidx.preference.ListPreference
+            android:key="notification_time"
+            android:title="@string/pref_notification_time"
+            android:summary="%s"
+            android:entries="@array/notification_time_entries"
+            android:entryValues="@array/notification_time_values"
+            android:defaultValue="30"
+            android:dependency="enable_notifications"
+            android:icon="@null" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:title="@string/pref_workout_defaults"
+        android:icon="@null">
+
+        <androidx.preference.EditTextPreference
+            android:key="default_duration"
+            android:title="@string/pref_default_duration"
+            android:summary="@string/pref_default_duration_summary"
+            android:defaultValue="60"
+            android:inputType="number"
+            android:icon="@null" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:title="@string/account_settings"
+        android:icon="@null">
+
+        <androidx.preference.Preference
+            android:key="logout"
+            android:title="@string/logout"
+            android:summary="@string/logout_summary"
+            android:icon="@null" />
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen> 

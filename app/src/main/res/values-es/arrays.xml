@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="days_of_week">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
+
+    <string-array name="workout_types">
+        <item>Cardio</item>
+        <item>Fuerza</item>
+        <item>Flexibilidad</item>
+        <item>HIIT</item>
+        <item>Yoga</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="workout_locations">
+        <item>Gimnasio</item>
+        <item>Casa</item>
+        <item>Parque</item>
+        <item>Piscina</item>
+        <item>Otro</item>
+    </string-array>
+</resources> 

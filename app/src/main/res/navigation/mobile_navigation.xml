@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.migym.ui.HomeFragment"
+        android:label="@string/title_home" />
+
+    <fragment
+        android:id="@+id/nav_workout"
+        android:name="com.example.migym.ui.workout.WorkoutListFragment"
+        android:label="@string/workout_list">
+        <action
+            android:id="@+id/action_workoutList_to_addWorkout"
+            app:destination="@id/navigation_add_workout" />
+        <action
+            android:id="@+id/action_workoutList_to_workoutDetail"
+            app:destination="@id/workoutDetailFragment">
+            <argument
+                android:name="workoutId"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.example.migym.ui.profile.ProfileFragment"
+        android:label="@string/title_profile" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.migym.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_add_workout"
+        android:name="com.example.migym.ui.AddWorkoutFragment"
+        android:label="@string/add_workout" />
+
+    <fragment
+        android:id="@+id/workoutDetailFragment"
+        android:name="com.example.migym.ui.WorkoutDetailFragment"
+        android:label="@string/workout_detail">
+        <argument
+            android:name="workoutId"
+            app:argType="string" />
+    </fragment>
+
+</navigation> 

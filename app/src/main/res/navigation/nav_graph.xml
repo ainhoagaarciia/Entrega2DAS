@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.migym.ui.home.HomeFragment"
+        android:label="@string/nav_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_workoutDetail"
+            app:destination="@id/workoutDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutListFragment"
+        android:name="com.example.migym.ui.workout.WorkoutListFragment"
+        android:label="@string/workouts"
+        tools:layout="@layout/fragment_workout_list">
+        <action
+            android:id="@+id/action_workoutList_to_detail"
+            app:destination="@id/workoutDetailFragment" />
+        <action
+            android:id="@+id/action_workoutList_to_add"
+            app:destination="@id/workoutDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dayWorkoutsFragment"
+        android:name="com.example.migym.ui.workout.DayWorkoutsFragment"
+        android:label="@string/workouts"
+        tools:layout="@layout/fragment_day_workouts">
+        <action
+            android:id="@+id/action_dayWorkouts_to_workoutDetail"
+            app:destination="@id/workoutDetailFragment" />
+        <argument
+            android:name="day"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutDetailFragment"
+        android:name="com.example.migym.ui.workout.WorkoutDetailFragment"
+        android:label="@string/workout_details"
+        tools:layout="@layout/fragment_workout_detail">
+        <argument
+            android:name="workoutId"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.migym.ui.settings.SettingsFragment"
+        android:label="@string/nav_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation> 

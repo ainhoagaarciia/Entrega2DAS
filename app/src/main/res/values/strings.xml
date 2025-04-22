@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MiGym</string>
+    
+    <!-- Navigation -->
+    <string name="navigation_drawer_open">Abrir menú de navegación</string>
+    <string name="navigation_drawer_close">Cerrar menú de navegación</string>
+    <string name="nav_header_title">MiGym</string>
+    <string name="nav_header_subtitle">Tu planificador personal de entrenamientos</string>
+    <string name="nav_header_desc">Cabecera de navegación</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_workout">Entrenamientos</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="menu_home">Inicio</string>
+    <string name="menu_calendar">Calendario</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_workouts">Entrenamientos</string>
+    <string name="workouts">Entrenamientos</string>
+    <string name="settings">Ajustes</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_workout">Entrenamientos</string>
+    <string name="title_profile">Perfil</string>
+    <string name="title_settings">Ajustes</string>
+    
+    <!-- Authentication -->
+    <string name="username">Nombre de usuario</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="register">Registrarse</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="registration_success">Registration successful</string>
+    <string name="registration_failed">Registration failed: %1$s</string>
+    <string name="login_success">Inicio de sesión exitoso</string>
+    <string name="login_error">Error al iniciar sesión</string>
+    <string name="error_registration_failed">Error en el registro</string>
+    <string name="error_invalid_email">Please enter a valid email address</string>
+    <string name="error_invalid_password">Contraseña inválida</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_username_too_short">El nombre de usuario debe tener al menos 3 caracteres</string>
+    <string name="error_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_passwords_dont_match">Las contraseñas no coinciden</string>
+    <string name="error_google_sign_in">Error al iniciar sesión con Google</string>
+    <string name="error_authentication">Error de autenticación</string>
+    <string name="sign_in_with_google">Continuar con Google</string>
+    <string name="prompt_email">Correo electrónico</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Iniciar sesión</string>
+    <string name="action_register">Registrarse</string>
+    <string name="name">Nombre</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="fill_all_fields">Please fill all fields</string>
+    <string name="auth_failed">Error de autenticación</string>
+    <string name="google_signin_failed">Error en el inicio de sesión con Google</string>
+    <string name="error_navigation">Error de navegación</string>
+    
+    <!-- Map Activity -->
+    <string name="select_gym_location">Seleccionar ubicación del gimnasio</string>
+    <string name="select_running_start">Seleccionar punto de inicio</string>
+    <string name="gym_location">Ubicación del gimnasio</string>
+    <string name="start_location">Punto de inicio</string>
+    <string name="end_location">Punto final</string>
+    <string name="select_location">Seleccionar ubicación</string>
+    <string name="select_location_first">Por favor, selecciona una ubicación primero</string>
+    <string name="select_start_location">Por favor, selecciona el punto de inicio</string>
+    <string name="tracking_started">Seguimiento iniciado</string>
+    <string name="start_tracking">Iniciar seguimiento</string>
+    <string name="finish_running">Finalizar carrera</string>
+    <string name="enter_distance">Introduce la distancia recorrida</string>
+    <string name="distance_km">Distancia (km)</string>
+    <string name="location_format" formatted="false">%s, %s</string>
+    <string name="confirm">Confirmar</string>
+    <string name="invalid_distance">Distancia inválida</string>
+    <string name="location_not_available">Ubicación no disponible</string>
+    <string name="location_permission_required">Se necesita permiso de ubicación para mostrar tu posición en el mapa</string>
+    <string name="confirm_location">Confirmar ubicación</string>
+    <string name="current_location">Mi ubicación</string>
+    <string name="selected_location">Ubicación seleccionada</string>
+    <string name="select_location_hint">Toca en el mapa para seleccionar una ubicación</string>
+    <string name="location_permission_rationale">Se necesita acceso a la ubicación para mostrar tu posición en el mapa</string>
+    <string name="location_permission_denied">No se puede mostrar tu ubicación sin los permisos necesarios</string>
+    <string name="location_error">No se pudo obtener la ubicación</string>
+    <string name="geocoding_error">No se pudo obtener la dirección para esta ubicación</string>
+    <string name="error_getting_address">No se pudo obtener la dirección para la ubicación seleccionada</string>
+    <string name="invalid_location">Ubicación inválida</string>
+    <string name="no_location_selected">Por favor, selecciona una ubicación</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_name">Recordatorios de entrenamiento</string>
+    <string name="notification_channel_description">Notificaciones para entrenamientos próximos</string>
+    <string name="notification_title">Recordatorio de entrenamiento</string>
+    <string name="notification_message">Es hora de tu entrenamiento: %1$s</string>
+    <string name="notifications_enabled">Notificaciones activadas</string>
+    <string name="notifications_disabled">Notificaciones desactivadas</string>
+    
+    <!-- Workout -->
+    <string name="workout_title">Título del entrenamiento</string>
+    <string name="workout_name">Nombre del entrenamiento</string>
+    <string name="workout_description">Descripción</string>
+    <string name="workout_type">Tipo</string>
+    <string name="workout_duration">Duración (minutos)</string>
+    <string name="workout_time">Hora</string>
+    <string name="workout_location">Ubicación</string>
+    <string name="workout_day">Día de la semana</string>
+    <string name="add_workout">Añadir entrenamiento</string>
+    <string name="edit_workout">Editar entrenamiento</string>
+    <string name="delete_workout">Eliminar entrenamiento</string>
+    <string name="no_workouts">No hay entrenamientos programados</string>
+    <string name="rate_performance">Valorar rendimiento</string>
+    <string name="notes">Notas</string>
+    
+    <!-- Days -->
+    <string name="sunday">Domingo</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    
+    <!-- Profile -->
+    <string name="profile">Perfil</string>
+    <string name="profile_photo">Foto de perfil</string>
+    <string name="profile_image">Imagen de perfil</string>
+    <string name="change_profile_photo">Cambiar foto de perfil</string>
+    <string name="profile_name">Nombre</string>
+    <string name="profile_age">Edad</string>
+    <string name="profile_weight">Peso (kg)</string>
+    <string name="profile_height">Altura (cm)</string>
+    <string name="profile_heart_problems">Tengo problemas cardíacos</string>
+    <string name="profile_heart_problems_details">Detalles sobre problemas cardíacos</string>
+    <string name="profile_save">Guardar perfil</string>
+    <string name="profile_update_success">Perfil actualizado correctamente</string>
+    <string name="profile_update_error">Error al actualizar el perfil</string>
+    <string name="gallery_permission_denied">Se requiere permiso de galería para cambiar la foto de perfil</string>
+    <string name="error_loading_image">Error al cargar la imagen</string>
+    <string name="error_saving_image">Error al guardar la imagen</string>
+    <string name="error_processing_image">Error al procesar la imagen</string>
+    <string name="upload_in_progress">Subida en progreso</string>
+    <string name="profile_image_updated">Imagen de perfil actualizada correctamente</string>
+    <string name="profile_image_update_error">Error al actualizar la imagen de perfil</string>
+    <string name="camera_permission_required">Se requiere permiso de cámara para tomar una foto</string>
+    <string name="storage_permission_required">Se requiere permiso de almacenamiento para seleccionar una imagen</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="camera_icon">Cámara</string>
+    <string name="take_photo">Tomar foto</string>
+    <string name="gallery_icon">Galería</string>
+    <string name="choose_from_gallery">Elegir de la galería</string>
+    
+    <!-- Actions -->
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">Aceptar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    
+    <!-- Workout Actions -->
+    <string name="share_workout">Compartir entrenamiento</string>
+    <string name="add_to_calendar">Añadir al calendario</string>
+    <string name="workout_details">Detalles del entrenamiento</string>
+    <string name="workout_saved">Entrenamiento guardado correctamente</string>
+    <string name="workout_deleted">Entrenamiento eliminado correctamente</string>
+    <string name="confirm_delete">¿Estás seguro de que quieres eliminar este entrenamiento?</string>
+    
+    <!-- Calendar -->
+    <string name="calendar_permission_required">Se requiere permiso de calendario para añadir eventos</string>
+    <string name="calendar_event_added">Evento añadido al calendario</string>
+    <string name="calendar_event_failed">Error al añadir evento al calendario</string>
+    
+    <!-- Sharing -->
+    <string name="share_via">Compartir vía</string>
+    <string name="share_workout_text">Mira mi entrenamiento: %1$s</string>
+    
+    <!-- Error Messages -->
+    <string name="error_loading_workout">Error al cargar el entrenamiento</string>
+    <string name="error_saving_workout">Error al guardar el entrenamiento</string>
+    <string name="error_deleting_workout">Error al eliminar el entrenamiento</string>
+    <string name="error_creating_image">Error al crear la imagen</string>
+    <string name="error_adding_workout">Error al añadir el entrenamiento</string>
+    <string name="camera_permission_denied">Permiso de cámara denegado</string>
+    <string name="upcoming_workout">Próximo entrenamiento</string>
+    <string name="error_invalid_image">La imagen seleccionada no es válida</string>
+    <string name="error_user_not_logged_in">Usuario no ha iniciado sesión</string>
+    <string name="error_uploading_image">Error al subir la imagen</string>
+    
+    <!-- Account Settings -->
+    <string name="account_settings">Account Settings</string>
+    <string name="logout">Log Out</string>
+    <string name="logout_summary">Cerrar sesión y volver a la pantalla de inicio</string>
+    <string name="logout_confirmation">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="logout_success">Sesión cerrada correctamente</string>
+    
+    <!-- Profile Errors -->
+    <string name="error_updating_profile">Error al actualizar el perfil</string>
+    <string name="error_loading_profile">Error al cargar el perfil</string>
+    <string name="error_invalid_number">Por favor, introduce números válidos</string>
+    
+    <!-- Map Errors -->
+    <string name="error_opening_map">Error al abrir el mapa</string>
+    <string name="error_getting_location">Error al obtener la ubicación</string>
+    <string name="location_not_selected">Por favor, selecciona una ubicación</string>
+    <string name="location_services_required">Los servicios de ubicación están desactivados</string>
+    
+    <!-- Widget -->
+    <string name="good_morning">¡Buenos días!</string>
+    <string name="good_afternoon">¡Buenas tardes!</string>
+    <string name="good_evening">¡Buenas noches!</string>
+    <string name="widget_description">Widget de saludo personalizado</string>
+    <string name="widget_name">Saludo MiGym</string>
+    <string name="sad_emoji_description">Emoji triste</string>
+    <string name="no_workouts_message">¡No hay entrenamientos programados!</string>
+    <string name="no_workouts_submessage">¿Por qué no añades uno? Tu cuerpo te lo agradecerá</string>
+    
+    <!-- Workout Dialog -->
+    <string name="location">Ubicación</string>
+    <string name="time">Hora</string>
+    <string name="duration">Duración (minutos)</string>
+    <string name="notification_time">Hora de notificación</string>
+    <string name="notification_15min">15 minutos antes</string>
+    <string name="notification_30min">30 minutos antes</string>
+    <string name="notification_1hour">1 hora antes</string>
+    <string name="error_duration_invalid">Por favor, introduce una duración válida</string>
+    <string name="error_time_invalid">Por favor, introduce una hora válida</string>
+    <string name="error_location_required">Por favor, introduce una ubicación</string>
+    <string name="error_name_required">Por favor, introduce un nombre para el entrenamiento</string>
+    <string name="error_type_required">Por favor, selecciona un tipo de entrenamiento</string>
+    <string name="error_day_required">Por favor, selecciona un día</string>
+    <string name="error_title_required">El título es obligatorio</string>
+    <string name="error_time_required">La hora es obligatoria</string>
+    <string name="error_duration_required">La duración es obligatoria</string>
+    <string name="error_duration_positive">La duración debe ser un número positivo</string>
+    <string name="conflict_message">Hay un conflicto con otro entrenamiento en este horario</string>
+    <string name="conflict_title">Conflicto de horario</string>
+    <string name="add_anyway">Añadir de todos modos</string>
+    <string name="save_button">Guardar</string>
+    <string name="enter_location">Introduce la ubicación del entrenamiento</string>
+    <string name="day_of_week">Día de la semana</string>
+    <string name="select_time">Seleccionar hora</string>
+    <string name="app_settings">App Settings</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="notifications">Enable Notifications</string>
+    <string name="profile_updated">Profile updated successfully</string>
+    <string name="update_failed">Failed to update profile</string>
+    <string name="logout_failed">Failed to log out</string>
+    <string name="no_workouts_for_day">No hay entrenamientos para este día</string>
+    <string name="select_language">Seleccionar idioma</string>
+    <string name="language">Idioma</string>
+    <string name="pref_dark_theme">Tema oscuro</string>
+    <string name="workout_list">Lista de entrenamientos</string>
+    <string name="workout_detail">Detalles del entrenamiento</string>
+    <string name="notification_settings">Configuración de notificaciones</string>
+    <string name="pref_notification_time">Tiempo de notificación</string>
+    <string name="pref_workout_defaults">Valores predeterminados</string>
+    <string name="pref_default_duration">Duración predeterminada</string>
+    <string name="pref_default_duration_summary">Duración predeterminada para nuevos entrenamientos</string>
+    <string name="dark_mode_summary">Activar tema oscuro</string>
+    <string name="english">Inglés</string>
+    <string name="general_settings">Configuración general</string>
+    <string name="language_summary">Seleccionar idioma de la aplicación</string>
+    <string name="notifications_summary">Activar notificaciones de entrenamientos</string>
+    <string name="spanish">Español</string>
+    <string name="time_format">Formato de hora</string>
+    <string name="time_format_summary">Seleccionar formato de hora (12h/24h)</string>
+    
+    <!-- Workout Related -->
+    <string name="workout_reminder_title">Workout Reminder</string>
+    <string name="workout_reminder_text">Time for your workout: %1$s</string>
+    <string name="workout_reminder_content">Don\'t forget your workout: %1$s</string>
+    <string name="workout_completed">Workout Completed</string>
+    <string name="workout_completed_content">Great job completing %1$s!</string>
+    <string name="workout_added">Workout added successfully</string>
+    <string name="workout_updated">Workout updated successfully</string>
+    <string name="workout_conflict">This workout conflicts with an existing one</string>
+    <string name="workout_time_conflict">This workout time conflicts with:</string>
+    <string name="delete_workout_title">Delete Workout</string>
+    <string name="delete_workout_message">Are you sure you want to delete this workout?</string>
+    <string name="duration_minutes">%1$d minutes</string>
+    <string name="no_workouts_today">No workouts scheduled for today</string>
+    
+    <!-- Profile Related -->
+    <string name="profile_fill_required">Please fill in all required fields</string>
+    <string name="profile_heart_details_required">Please provide details about your heart condition</string>
+    <string name="profile_saved">Profile saved successfully</string>
+    
+    <!-- Dialog Related -->
+    <string name="time_conflict">Time Conflict</string>
+    <string name="force_add">Add Anyway</string>
+    
+    <!-- Notification Related -->
+    <string name="notification_service_running">Workout notification service is running</string>
+    <string name="workout_completion_title">Workout Complete?</string>
+    <string name="workout_completion_text">Did you complete %1$s?</string>
+</resources>

@@ -1,0 +1,1 @@
+// Este archivo debe ser eliminado ya que la versión correcta está en adapters/WorkoutAdapter.java 

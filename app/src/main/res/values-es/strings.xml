@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="navigation_drawer_open">Abrir menú de navegación</string>
+    <string name="navigation_drawer_close">Cerrar menú de navegación</string>
+    <string name="nav_header_subtitle">Tu planificador de entrenamientos</string>
+    <string name="nav_header_desc">Encabezado de navegación</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_workout">Entrenamientos</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="menu_home">Inicio</string>
+    <string name="menu_calendar">Calendario</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_workouts">Entrenamientos</string>
+    <string name="workouts">Entrenamientos</string>
+    <string name="settings">Ajustes</string>
+    <string name="action_settings">Ajustes</string>
+    
+    <!-- Authentication -->
+    <string name="username">Nombre de usuario</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="register">Registrarse</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="registration_success">Registro exitoso</string>
+    <string name="registration_failed">Error en el registro: %1$s</string>
+    <string name="login_success">Inicio de sesión exitoso</string>
+    <string name="login_error">Error en el inicio de sesión</string>
+    <string name="error_registration_failed">Error al registrarse</string>
+    <string name="error_invalid_email">Correo electrónico inválido</string>
+    <string name="error_invalid_password">Contraseña inválida</string>
+    <string name="error_field_required">Este campo es requerido</string>
+    <string name="error_username_too_short">El nombre de usuario debe tener al menos 3 caracteres</string>
+    <string name="error_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_passwords_dont_match">Las contraseñas no coinciden</string>
+    <string name="error_google_sign_in">Error al iniciar sesión con Google</string>
+    <string name="error_authentication">Error en la autenticación</string>
+    <string name="sign_in_with_google">Continuar con Google</string>
+    
+    <!-- Settings -->
+    <string name="general_settings">Ajustes Generales</string>
+    <string name="language">Idioma</string>
+    <string name="language_summary">Selecciona tu idioma preferido</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="notifications_summary">Activar/desactivar notificaciones</string>
+    <string name="time_format">Formato 24 horas</string>
+    <string name="time_format_summary">Usar formato de 24 horas</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="dark_mode_summary">Activar modo oscuro</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_name">Recordatorios de entrenamiento</string>
+    <string name="notification_channel_description">Notificaciones para entrenamientos programados</string>
+    <string name="notification_title">Recordatorio de entrenamiento</string>
+    <string name="notification_message">Hora de tu entrenamiento: %1$s</string>
+    <string name="notifications_enabled">Notificaciones activadas</string>
+    <string name="notifications_disabled">Notificaciones desactivadas</string>
+    
+    <!-- Workout -->
+    <string name="workout_title">Título del entrenamiento</string>
+    <string name="workout_description">Descripción</string>
+    <string name="workout_type">Tipo</string>
+    <string name="workout_duration">Duración (minutos)</string>
+    <string name="workout_time">Hora</string>
+    <string name="workout_location">Ubicación</string>
+    <string name="workout_day">Día de la semana</string>
+    <string name="add_workout">Añadir entrenamiento</string>
+    <string name="edit_workout">Editar entrenamiento</string>
+    <string name="delete_workout">Eliminar entrenamiento</string>
+    
+    <!-- Actions -->
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">Aceptar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="delete">Eliminar</string>
+    
+    <!-- Profile -->
+    <string name="profile_image">Imagen de perfil</string>
+    <string name="change_profile_photo">Cambiar foto de perfil</string>
+    <string name="name">Nombre</string>
+    <string name="save_changes">Guardar cambios</string>
+</resources> 

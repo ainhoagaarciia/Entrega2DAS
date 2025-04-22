@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path
+        name="profile_photos"
+        path="." />
+    <cache-path
+        name="cache_photos"
+        path="." />
+    <external-path
+        name="external_photos"
+        path="." />
+    <external-files-path
+        name="my_images"
+        path="Pictures" />
+    <cache-path
+        name="my_cache_images"
+        path="." />
+    <cache-path
+        name="temp_images"
+        path="." />
+</paths> 

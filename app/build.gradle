@@ -1,0 +1,195 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.example.migym'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.migym"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding false  // Deshabilitamos Data Binding temporalmente
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+        baseline = file("lint-baseline.xml")
+    }
+
+    packagingOptions {
+        exclude 'META-INF/*.proto'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/*.kotlin_module'
+        exclude 'META-INF/gradle/incremental.annotation.processors'
+        exclude 'META-INF/proguard/**'
+        exclude 'google/protobuf/*.proto'
+        exclude 'google/api/*.proto'
+        exclude 'google/type/*.proto'
+        exclude 'google/rpc/*.proto'
+        exclude 'google/cloud/audit/*.proto'
+        exclude 'google/logging/type/*.proto'
+        exclude 'google/longrunning/*.proto'
+        exclude 'google/geo/type/*.proto'
+        pickFirst 'META-INF/services/com.google.protobuf.GeneratedExtensionRegistryProvider'
+        pickFirst 'META-INF/services/com.google.protobuf.util.JsonFormat.TypeRegistry'
+        pickFirst 'com/google/api/Monitoring.class'
+        pickFirst 'com/google/api/MonitoringProto.class'
+        pickFirst 'com/google/api/OAuthRequirements.class'
+        pickFirst 'com/google/api/Page.class'
+        pickFirst 'com/google/api/ProjectProperties.class'
+        pickFirst 'com/google/api/Property.class'
+        pickFirst 'com/google/api/Quota.class'
+        pickFirst 'com/google/api/QuotaLimit.class'
+        pickFirst 'com/google/api/ResourceDescriptor.class'
+        pickFirst 'com/google/api/ResourceReference.class'
+        pickFirst 'com/google/api/Service.class'
+        pickFirst 'com/google/api/SourceInfo.class'
+        pickFirst 'com/google/api/SystemParameter.class'
+        pickFirst 'com/google/api/SystemParameterRule.class'
+        pickFirst 'com/google/api/SystemParameters.class'
+        pickFirst 'com/google/api/Usage.class'
+        pickFirst 'com/google/api/UsageRule.class'
+        pickFirst 'com/google/cloud/audit/AuditLog.class'
+        pickFirst 'com/google/cloud/audit/AuthenticationInfo.class'
+        pickFirst 'com/google/cloud/audit/AuthorizationInfo.class'
+        pickFirst 'com/google/cloud/audit/RequestMetadata.class'
+        pickFirst 'com/google/geo/type/Viewport.class'
+        pickFirst 'com/google/logging/type/HttpRequest.class'
+        pickFirst 'com/google/logging/type/LogSeverity.class'
+        pickFirst 'com/google/longrunning/Operation.class'
+        pickFirst 'com/google/rpc/Status.class'
+        pickFirst 'com/google/type/Date.class'
+        pickFirst 'com/google/type/DateTime.class'
+        pickFirst 'com/google/type/LatLng.class'
+        pickFirst 'com/google/type/Money.class'
+        pickFirst 'com/google/type/PostalAddress.class'
+        pickFirst 'com/google/type/TimeOfDay.class'
+    }
+}
+
+dependencies {
+    // Google Cloud Storage - Updated version with specific exclusions
+    implementation('com.google.cloud:google-cloud-storage:2.30.0') {
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
+        exclude group: 'com.google.api.grpc', module: 'proto-google-common-protos'
+        exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+        exclude group: 'com.google.guava', module: 'failureaccess'
+        exclude group: 'com.google.guava', module: 'guava-android'
+    }
+    
+    // Jackson dependencies
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.7'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.7'
+    
+    // Firebase dependencies - Updated version
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-messaging'
+    
+    // gRPC dependencies
+    implementation 'io.grpc:grpc-okhttp:1.61.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.61.0'
+    implementation 'io.grpc:grpc-stub:1.61.0'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    
+    // Google Maps and Sign-In
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+    implementation 'androidx.navigation:navigation-fragment:2.7.6'
+    implementation 'androidx.navigation:navigation-ui:2.7.6'
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation 'androidx.room:room-ktx:2.6.1'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.work:work-runtime:2.9.0'
+    
+    // Networking
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    kapt 'com.github.bumptech.glide:compiler:4.16.0'
+    implementation 'com.cloudinary:cloudinary-android:2.3.1'
+    
+    kapt 'androidx.room:room-compiler:2.6.1'
+
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Protobuf dependencies - using only protobuf-javalite
+    implementation 'com.google.protobuf:protobuf-javalite:3.21.7'
+
+    // Guava - Specific version for Android
+    implementation 'com.google.guava:guava:32.1.3-android'
+
+    // Force specific versions for protobuf and guava
+    configurations.all {
+        resolutionStrategy {
+            force 'com.google.guava:guava:32.1.3-android'
+            force 'com.google.protobuf:protobuf-javalite:3.21.7'
+            force 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+            force 'com.google.guava:failureaccess:1.0.1'
+            force 'com.google.cloud:google-cloud-storage:2.30.0'
+            force 'com.google.guava:guava-android:32.1.3-android'
+            force 'com.fasterxml.jackson.core:jackson-core:2.12.7'
+            force 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
+            force 'com.fasterxml.jackson.core:jackson-annotations:2.12.7'
+            force 'io.grpc:grpc-okhttp:1.61.0'
+            force 'io.grpc:grpc-protobuf-lite:1.61.0'
+            force 'io.grpc:grpc-stub:1.61.0'
+            
+            // Exclude all protobuf-java in favor of protobuf-javalite
+            exclude group: 'com.google.protobuf', module: 'protobuf-java'
+        }
+    }
+}
