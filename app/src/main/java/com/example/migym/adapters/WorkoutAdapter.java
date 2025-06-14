@@ -55,6 +55,7 @@ public class WorkoutAdapter extends ListAdapter<Workout, WorkoutAdapter.WorkoutV
         private final TextView locationText;
         private final TextView durationText;
         private final ImageButton deleteButton;
+        private final TextView dayText;
 
         WorkoutViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +64,7 @@ public class WorkoutAdapter extends ListAdapter<Workout, WorkoutAdapter.WorkoutV
             locationText = itemView.findViewById(R.id.workoutLocationText);
             durationText = itemView.findViewById(R.id.workoutDurationText);
             deleteButton = itemView.findViewById(R.id.deleteWorkoutButton);
+            dayText = itemView.findViewById(R.id.workoutDayText);
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -84,6 +86,13 @@ public class WorkoutAdapter extends ListAdapter<Workout, WorkoutAdapter.WorkoutV
             timeText.setText(workout.getTime());
             locationText.setText(workout.getLocation());
             durationText.setText(String.format(Locale.getDefault(), "%d min", workout.getDuration()));
+            String[] days = itemView.getContext().getResources().getStringArray(R.array.days_of_week);
+            int dayIndex = workout.getDayOfWeek();
+            if (dayIndex >= 0 && dayIndex < days.length) {
+                dayText.setText(days[dayIndex]);
+            } else {
+                dayText.setText("");
+            }
         }
     }
 }

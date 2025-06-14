@@ -32,6 +32,7 @@ public class User implements Serializable {
     private boolean isActive;
     private UserPreferences preferences;
     private String userId;
+    private int gender;
 
     public User() {
         this.id = "current_user"; // Solo tendremos un usuario
@@ -170,6 +171,14 @@ public class User implements Serializable {
 
     public void setPreferences(UserPreferences preferences) {
         this.preferences = preferences;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     @NonNull

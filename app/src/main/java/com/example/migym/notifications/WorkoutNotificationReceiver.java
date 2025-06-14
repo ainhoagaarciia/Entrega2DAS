@@ -11,7 +11,7 @@ public class WorkoutNotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String workoutTitle = intent.getStringExtra("workout_title");
         String workoutLocation = intent.getStringExtra("workout_location");
-
+        android.util.Log.d("WorkoutNotificationReceiver", "onReceive: title=" + workoutTitle + ", location=" + workoutLocation);
         NotificationHelper notificationHelper = new NotificationHelper(context);
         notificationHelper.showWorkoutReminder(workoutTitle, workoutLocation);
     }

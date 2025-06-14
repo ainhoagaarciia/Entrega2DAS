@@ -338,6 +338,13 @@ public class Workout {
         return dayOfWeek == workout.dayOfWeek &&
                duration == workout.duration &&
                completed == workout.completed &&
+               Double.compare(workout.latitude, latitude) == 0 &&
+               Double.compare(workout.longitude, longitude) == 0 &&
+               Double.compare(workout.distance, distance) == 0 &&
+               Double.compare(workout.speed, speed) == 0 &&
+               performance == workout.performance &&
+               notificationTime == workout.notificationTime &&
+               notificationEnabled == workout.notificationEnabled &&
                Objects.equals(id, workout.id) &&
                Objects.equals(name, workout.name) &&
                Objects.equals(title, workout.title) &&
@@ -345,12 +352,17 @@ public class Workout {
                Objects.equals(type, workout.type) &&
                Objects.equals(time, workout.time) &&
                Objects.equals(instructor, workout.instructor) &&
-               Objects.equals(location, workout.location);
+               Objects.equals(location, workout.location) &&
+               Objects.equals(difficulty, workout.difficulty) &&
+               Objects.equals(equipment, workout.equipment) &&
+               Objects.equals(muscleGroups, workout.muscleGroups) &&
+               Objects.equals(imageUrl, workout.imageUrl) &&
+               Objects.equals(notes, workout.notes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, title, description, type, dayOfWeek, time, duration, instructor, location, completed);
+        return Objects.hash(id, name, title, description, type, dayOfWeek, time, duration, instructor, location, completed, latitude, longitude, difficulty, equipment, muscleGroups, imageUrl, distance, speed, notes, performance, notificationTime, notificationEnabled);
     }
 
     /**

@@ -17,6 +17,11 @@ import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseUser;
 
 public class UserRepository {
     private static final String TAG = "UserRepository";
@@ -39,6 +44,11 @@ public class UserRepository {
 
     public interface OnLogoutListener {
         void onSuccess();
+        void onError(String error);
+    }
+
+    public interface OnUserLoadedListener {
+        void onUserLoaded(User user);
         void onError(String error);
     }
 
@@ -106,47 +116,39 @@ public class UserRepository {
         }
 
         try {
-            // Verificar si hay una imagen anterior y eliminarla
-            String oldImagePath = userPreferences.getProfileImageUrl();
-            if (oldImagePath != null && !oldImagePath.isEmpty()) {
-                imageStorage.deleteImage(oldImagePath);
-            }
+            // Subir la imagen a Firebase Storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            String fileName = "profile_" + System.currentTimeMillis() + ".jpg";
+            StorageReference photoRef = storageRef.child("profile_images/" + fileName);
 
-            // Verificar el tipo de archivo
-            String mimeType = context.getContentResolver().getType(photoUri);
-            if (mimeType == null || !mimeType.startsWith("image/")) {
-                listener.onError("El archivo seleccionado no es una imagen válida");
-                return;
-            }
-
-            // Guardar la nueva imagen
-            String imagePath = imageStorage.saveImage(photoUri);
-            if (imagePath == null || imagePath.isEmpty()) {
-                listener.onError("No se pudo guardar la imagen");
-                return;
-            }
-
-            Log.d(TAG, "Imagen guardada en: " + imagePath);
-            
-            // Actualizar la URL de la imagen en las preferencias
-            userPreferences.saveProfileImagePath(imagePath);
-            
-            // Actualizar el usuario actual con la nueva imagen
-            User currentUserValue = currentUser.getValue();
-            if (currentUserValue != null) {
-                currentUserValue.setPhotoUrl(imagePath);
-                currentUser.postValue(currentUserValue);
-            }
-            
-            // Notificar éxito
-            listener.onSuccess(imagePath);
-            
-        } catch (SecurityException e) {
-            Log.e(TAG, "Error de permisos al acceder a la imagen", e);
-            listener.onError("No hay permisos suficientes para acceder a la imagen");
+            UploadTask uploadTask = photoRef.putFile(photoUri);
+            uploadTask.addOnProgressListener(taskSnapshot -> {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                listener.onProgress(progress / 100.0);
+            });
+            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                photoRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String downloadUrl = uri.toString();
+                    // Guardar la URL en preferencias
+                    userPreferences.saveProfileImagePath(downloadUrl);
+                    // Actualizar el usuario actual con la nueva imagen
+                    User currentUserValue = currentUser.getValue();
+                    if (currentUserValue != null) {
+                        currentUserValue.setPhotoUrl(downloadUrl);
+                        currentUser.postValue(currentUserValue);
+                    }
+                    listener.onSuccess(downloadUrl);
+                }).addOnFailureListener(e -> {
+                    listener.onError("No se pudo obtener la URL de descarga de la imagen");
+                });
+            });
+            uploadTask.addOnFailureListener(e -> {
+                listener.onError("Error al subir la imagen: " + e.getMessage());
+            });
         } catch (Exception e) {
-            Log.e(TAG, "Error inesperado al procesar la imagen", e);
-            listener.onError("Error inesperado al procesar la imagen");
+            Log.e(TAG, "Error inesperado al subir la imagen", e);
+            listener.onError("Error inesperado al subir la imagen");
         }
     }
 
@@ -182,5 +184,48 @@ public class UserRepository {
 
     public boolean isUserAuthenticated() {
         return userPreferences.isLoggedIn();
+    }
+
+    // Guardar perfil en Firestore
+    public void saveUserProfileToFirebase(User user, OnProfileUpdateListener listener) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            if (listener != null) listener.onError("Usuario no autenticado");
+            return;
+        }
+        String uid = firebaseUser.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(uid)
+            .set(user)
+            .addOnSuccessListener(aVoid -> {
+                if (listener != null) listener.onSuccess(user.getPhotoUrl());
+            })
+            .addOnFailureListener(e -> {
+                if (listener != null) listener.onError("Error al guardar perfil en la nube: " + e.getMessage());
+            });
+    }
+
+    // Cargar perfil desde Firestore
+    public void loadUserProfileFromFirebase(OnUserLoadedListener listener) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            if (listener != null) listener.onError("Usuario no autenticado");
+            return;
+        }
+        String uid = firebaseUser.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(uid)
+            .get()
+            .addOnSuccessListener(documentSnapshot -> {
+                User user = documentSnapshot.toObject(User.class);
+                if (user != null) {
+                    if (listener != null) listener.onUserLoaded(user);
+                } else {
+                    if (listener != null) listener.onError("Perfil no encontrado en la nube");
+                }
+            })
+            .addOnFailureListener(e -> {
+                if (listener != null) listener.onError("Error al cargar perfil de la nube: " + e.getMessage());
+            });
     }
 } 

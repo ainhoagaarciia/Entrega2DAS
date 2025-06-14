@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.example.migym.R;
 import com.example.migym.databinding.ActivityMapBinding;
+import com.example.migym.utils.FirebaseStorageManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -35,6 +38,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
     private static final String TAG = "MapActivity";
@@ -50,12 +55,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private boolean isRequestingLocationUpdates = false;
     private Geocoder geocoder;
     private MaterialButton confirmButton;
+    private FirebaseStorageManager storageManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        storageManager = new FirebaseStorageManager();
 
         // Add back press handling
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -290,44 +298,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void confirmLocation() {
-        if (selectedLocation != null) {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("latitude", selectedLocation.latitude);
-            resultIntent.putExtra("longitude", selectedLocation.longitude);
-            
-            // Obtener la dirección usando Geocoder
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> addresses = geocoder.getFromLocation(
-                    selectedLocation.latitude, 
-                    selectedLocation.longitude, 
-                    1
-                );
-                
-                if (addresses != null && !addresses.isEmpty()) {
-                    Address address = addresses.get(0);
-                    StringBuilder addressBuilder = new StringBuilder();
-                    
-                    for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                        addressBuilder.append(address.getAddressLine(i));
-                        if (i < address.getMaxAddressLineIndex()) {
-                            addressBuilder.append(", ");
-                        }
-                    }
-                    
-                    resultIntent.putExtra("address", addressBuilder.toString());
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Error getting address", e);
-            }
-            
-            setResult(Activity.RESULT_OK, resultIntent);
-            finish();
-        } else {
-            Toast.makeText(this, 
-                getString(R.string.no_location_selected), 
-                Toast.LENGTH_SHORT).show();
+        if (selectedLocation == null) {
+            Toast.makeText(this, R.string.select_location_first, Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("latitude", selectedLocation.latitude);
+        resultIntent.putExtra("longitude", selectedLocation.longitude);
+
+        // Obtener ciudad, calle y dirección completa usando Geocoder
+        String city = "";
+        String street = "";
+        String addressLine = "";
+        try {
+            List<Address> addresses = geocoder.getFromLocation(selectedLocation.latitude, selectedLocation.longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                if (address.getLocality() != null) city = address.getLocality();
+                if (address.getThoroughfare() != null) street = address.getThoroughfare();
+                if (address.getMaxAddressLineIndex() >= 0) addressLine = address.getAddressLine(0);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting address for location", e);
+        }
+        resultIntent.putExtra("city", city);
+        resultIntent.putExtra("street", street);
+        resultIntent.putExtra("address", addressLine);
+        
+        setResult(RESULT_OK, resultIntent);
+        finish();
     }
 
     @Override

@@ -148,6 +148,7 @@
     <string name="take_photo">Tomar foto</string>
     <string name="gallery_icon">Galería</string>
     <string name="choose_from_gallery">Elegir de la galería</string>
+    <string name="profile_gender">Sexo</string>
     
     <!-- Actions -->
     <string name="save">Guardar</string>
@@ -295,4 +296,10 @@
     <string name="notification_service_running">Workout notification service is running</string>
     <string name="workout_completion_title">Workout Complete?</string>
     <string name="workout_completion_text">Did you complete %1$s?</string>
+    
+    <!-- New strings from the code block -->
+    <string name="add_image">Añadir imagen</string>
+    <string name="image_upload_success">Imagen subida correctamente</string>
+    <string name="image_upload_error">Error al subir la imagen</string>
+    <string name="tap_to_change_photo">Toca la imagen para cambiarla</string>
 </resources>

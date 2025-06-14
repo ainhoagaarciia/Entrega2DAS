@@ -123,7 +123,18 @@ public class WorkoutListFragment extends Fragment implements WorkoutAdapter.OnWo
 
     @Override
     public void onWorkoutClick(Workout workout) {
-        // TODO: Navegar al detalle del workout
+        AddWorkoutDialog dialog = AddWorkoutDialog.newInstance(workout);
+        dialog.setListener(new AddWorkoutDialog.OnWorkoutListener() {
+            @Override
+            public void onWorkoutCreated(Workout newWorkout) {
+                // No se usa aquí
+            }
+            @Override
+            public void onWorkoutUpdated(Workout updatedWorkout) {
+                viewModel.updateWorkout(updatedWorkout);
+            }
+        });
+        dialog.show(getChildFragmentManager(), "editWorkout");
     }
 
     @Override

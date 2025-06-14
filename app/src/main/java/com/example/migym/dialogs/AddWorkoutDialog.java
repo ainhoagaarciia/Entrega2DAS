@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -23,6 +24,7 @@ import com.example.migym.models.Workout;
 import com.example.migym.databinding.DialogAddWorkoutBinding;
 import com.example.migym.viewmodels.WorkoutViewModel;
 import com.example.migym.ui.MapActivity;
+import com.example.migym.utils.WorkoutAlarmManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,6 +103,16 @@ public class AddWorkoutDialog extends DialogFragment {
         
         if (existingWorkout != null) {
             loadWorkoutData();
+        } else {
+            // Rellenar duración por defecto si existe
+            int defaultDuration = 0;
+            try {
+                defaultDuration = Integer.parseInt(androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString("pref_default_duration", "0"));
+            } catch (Exception ignored) {}
+            if (defaultDuration > 0) {
+                binding.durationEditText.setText(String.valueOf(defaultDuration));
+            }
         }
 
         Dialog dialog = new MaterialAlertDialogBuilder(requireContext())
@@ -181,6 +193,8 @@ public class AddWorkoutDialog extends DialogFragment {
         binding.durationEditText.setText(String.valueOf(existingWorkout.getDuration()));
         selectedLatitude = existingWorkout.getLatitude();
         selectedLongitude = existingWorkout.getLongitude();
+        // Seleccionar el día de la semana en el spinner
+        binding.daySpinner.setSelection(existingWorkout.getDayOfWeek());
     }
 
     private void saveWorkout() {
@@ -191,6 +205,19 @@ public class AddWorkoutDialog extends DialogFragment {
             binding.hourSpinner.getSelectedItemPosition(),
             binding.minuteSpinner.getSelectedItemPosition());
         String durationStr = binding.durationEditText.getText().toString().trim();
+        int dayOfWeek = binding.daySpinner.getSelectedItemPosition();
+
+        // Aplicar duración predeterminada si está vacío
+        if (TextUtils.isEmpty(durationStr)) {
+            try {
+                int defaultDuration = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString("pref_default_duration", "0"));
+                if (defaultDuration > 0) {
+                    durationStr = String.valueOf(defaultDuration);
+                    binding.durationEditText.setText(durationStr);
+                }
+            } catch (Exception ignored) {}
+        }
 
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(requireContext(), R.string.error_name_required, Toast.LENGTH_SHORT).show();
@@ -202,6 +229,7 @@ public class AddWorkoutDialog extends DialogFragment {
             return;
         }
 
+        // Validar duración después de aplicar el valor predeterminado
         if (TextUtils.isEmpty(durationStr)) {
             Toast.makeText(requireContext(), R.string.error_duration_required, Toast.LENGTH_SHORT).show();
             return;
@@ -230,6 +258,9 @@ public class AddWorkoutDialog extends DialogFragment {
             workout.setDuration(duration);
             workout.setLatitude(selectedLatitude);
             workout.setLongitude(selectedLongitude);
+            workout.setDayOfWeek(dayOfWeek);
+            // Programar/cancelar alarma según preferencias
+            handleWorkoutAlarm(workout);
             listener.onWorkoutUpdated(workout);
         } else {
             workout = new Workout();
@@ -242,10 +273,28 @@ public class AddWorkoutDialog extends DialogFragment {
             workout.setDuration(duration);
             workout.setLatitude(selectedLatitude);
             workout.setLongitude(selectedLongitude);
-            workout.setDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1);
+            workout.setDayOfWeek(dayOfWeek);
             workout.setType("OTHER");
             workout.setCompleted(0);
+            // Programar/cancelar alarma según preferencias
+            handleWorkoutAlarm(workout);
             listener.onWorkoutCreated(workout);
+        }
+    }
+
+    private void handleWorkoutAlarm(Workout workout) {
+        // Obtener preferencias
+        boolean notificationsEnabled = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getBoolean("enable_notifications", true);
+        int minutesBefore = 30;
+        try {
+            minutesBefore = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    .getString("notification_time", "30"));
+        } catch (Exception ignored) {}
+        if (notificationsEnabled) {
+            WorkoutAlarmManager.scheduleWorkoutAlarm(requireContext(), workout, minutesBefore);
+        } else {
+            WorkoutAlarmManager.cancelWorkoutAlarm(requireContext(), workout);
         }
     }
 

@@ -15,6 +15,15 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/workoutDayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/workoutNameText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -22,7 +31,7 @@
             android:textAppearance="?attr/textAppearanceSubtitle1"
             app:layout_constraintEnd_toStartOf="@id/deleteWorkoutButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/workoutDayText" />
 
         <TextView
             android:id="@+id/workoutTimeText"
@@ -41,7 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:drawablePadding="4dp"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:drawableStartCompat="@drawable/ic_location"
             app:layout_constraintStart_toEndOf="@id/workoutTimeText"
             app:layout_constraintTop_toTopOf="@id/workoutTimeText" />

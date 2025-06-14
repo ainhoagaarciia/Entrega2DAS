@@ -27,8 +27,12 @@ public class NotificationHelper {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     context.getString(R.string.workout_reminder_title),
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
+            channel.setDescription(context.getString(R.string.workout_reminder_content));
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            channel.setShowBadge(true);
             notificationManager.createNotificationChannel(channel);
         }
     }
@@ -47,11 +51,20 @@ public class NotificationHelper {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(context.getString(R.string.workout_reminder_title))
                 .setContentText(context.getString(R.string.workout_reminder_text, workoutName))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(context.getString(R.string.workout_reminder_text, workoutName) + 
+                            (location != null ? "\n" + location : "")))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        try {
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+            android.util.Log.d("NotificationHelper", "Notification sent successfully");
+        } catch (Exception e) {
+            android.util.Log.e("NotificationHelper", "Error showing notification: " + e.getMessage());
+        }
     }
 
     public void cancelWorkoutReminder(String workoutId) {
