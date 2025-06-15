@@ -26,13 +26,14 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.Locale;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.example.migym.utils.UserPreferences;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import com.example.migym.repositories.UserRepository;
+import com.example.migym.models.User;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
     private UserViewModel userViewModel;
-    private UserPreferences userPreferences;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 1;
@@ -77,6 +77,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
+        // Load user profile from Firebase
+        userViewModel.loadUserProfileFromFirebase(new UserRepository.OnUserLoadedListener() {
+            @Override
+            public void onUserLoaded(User user) {
+                Log.d(TAG, "User profile loaded from Firebase");
+                // Update local database with Firebase data
+                userViewModel.updateUserProfile(user);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error loading user profile: " + error);
+            }
+        });
 
         // Setup UI components
         setupUI();

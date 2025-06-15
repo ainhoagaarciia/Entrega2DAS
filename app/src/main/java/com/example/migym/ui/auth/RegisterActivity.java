@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.migym.MainActivity;
 import com.example.migym.R;
 import com.example.migym.databinding.ActivityRegisterBinding;
-import com.example.migym.utils.UserPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -49,10 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
                         FirebaseUser user = auth.getCurrentUser();
                         if (user != null) {
                             // Guardar datos del usuario
-                            UserPreferences userPreferences = new UserPreferences(this);
-                            userPreferences.setLoggedIn(true);
-                            userPreferences.saveEmail(email);
-                            
                             Toast.makeText(this, R.string.registration_success, Toast.LENGTH_SHORT).show();
                             
                             // Redirigir al MainActivity

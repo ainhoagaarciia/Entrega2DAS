@@ -144,8 +144,6 @@ public class UserContentProvider extends ContentProvider {
             case USER_ID:
                 String userId = uri.getLastPathSegment();
                 if (userId != null && userId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    // Eliminar usuario de Firestore
-                    userRepository.cleanup();
                     return 1;
                 }
                 break;

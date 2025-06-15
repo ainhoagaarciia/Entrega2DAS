@@ -2,16 +2,13 @@ package com.example.migym.models;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.PropertyName;
-import com.example.migym.data.converters.UserPreferencesConverter;
 import java.io.Serializable;
 
 @Entity(tableName = "users")
-@TypeConverters(UserPreferencesConverter.class)
 public class User implements Serializable {
     @PrimaryKey
     @NonNull
@@ -30,14 +27,12 @@ public class User implements Serializable {
     private String fcmToken;
     private Timestamp lastLogin;
     private boolean isActive;
-    private UserPreferences preferences;
     private String userId;
     private int gender;
 
     public User() {
         this.id = "current_user"; // Solo tendremos un usuario
         this.isActive = true;
-        this.preferences = new UserPreferences();
     }
 
     @NonNull
@@ -165,14 +160,6 @@ public class User implements Serializable {
         isActive = active;
     }
 
-    public UserPreferences getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(UserPreferences preferences) {
-        this.preferences = preferences;
-    }
-
     public int getGender() {
         return gender;
     }
@@ -196,51 +183,5 @@ public class User implements Serializable {
                 ", photoUrl='" + photoUrl + '\'' +
                 ", lastUpdated=" + lastLogin +
                 '}';
-    }
-
-    public static class UserPreferences implements Serializable {
-        private String language;
-        private boolean notificationsEnabled;
-        private boolean darkMode;
-        private boolean timeFormat24h;
-
-        public UserPreferences() {
-            this.language = "es";
-            this.notificationsEnabled = true;
-            this.darkMode = false;
-            this.timeFormat24h = true;
-        }
-
-        public String getLanguage() {
-            return language;
-        }
-
-        public void setLanguage(String language) {
-            this.language = language;
-        }
-
-        public boolean isNotificationsEnabled() {
-            return notificationsEnabled;
-        }
-
-        public void setNotificationsEnabled(boolean notificationsEnabled) {
-            this.notificationsEnabled = notificationsEnabled;
-        }
-
-        public boolean isDarkMode() {
-            return darkMode;
-        }
-
-        public void setDarkMode(boolean darkMode) {
-            this.darkMode = darkMode;
-        }
-
-        public boolean isTimeFormat24h() {
-            return timeFormat24h;
-        }
-
-        public void setTimeFormat24h(boolean timeFormat24h) {
-            this.timeFormat24h = timeFormat24h;
-        }
     }
 } 

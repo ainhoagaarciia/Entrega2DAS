@@ -9,24 +9,22 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.migym.models.User;
 import com.example.migym.repositories.UserRepository;
 import com.example.migym.repositories.UserRepository.OnProfileUpdateListener;
-import com.example.migym.utils.UserPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class UserViewModel extends AndroidViewModel {
     private static final String TAG = "UserViewModel";
-    private final UserRepository repository;
-    private final UserPreferences userPreferences;
+    private final UserRepository userRepository;
     private final MutableLiveData<User> currentUser = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<Double> uploadProgress = new MutableLiveData<>(0.0);
-    private final MutableLiveData<Boolean> isLoggedOut = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> isLoggedOut;
 
     public UserViewModel(Application application) {
         super(application);
-        repository = new UserRepository(application);
-        userPreferences = new UserPreferences(application);
-        repository.getCurrentUser().observeForever(user -> currentUser.postValue(user));
+        userRepository = new UserRepository(application);
+        isLoggedOut = new MutableLiveData<>(false);
+        userRepository.getCurrentUser().observeForever(user -> currentUser.postValue(user));
         loadCurrentUser();
     }
 
@@ -38,7 +36,7 @@ public class UserViewModel extends AndroidViewModel {
 
         isLoading.setValue(true);
         final OnProfileUpdateListener finalListener = listener;
-        repository.uploadProfileImage(photoUri, new OnProfileUpdateListener() {
+        userRepository.uploadProfileImage(photoUri, new OnProfileUpdateListener() {
             @Override
             public void onSuccess(String imageUrl) {
                 isLoading.postValue(false);
@@ -89,7 +87,7 @@ public class UserViewModel extends AndroidViewModel {
     public void updateProfile(String name, String email) {
         final User updatedUser = createUpdatedUser(name, email);
         
-        repository.updateUserProfile(updatedUser, new UserRepository.OnProfileUpdateListener() {
+        userRepository.updateUserProfile(updatedUser, new UserRepository.OnProfileUpdateListener() {
             @Override
             public void onSuccess(String imageUrl) {
                 currentUser.postValue(updatedUser);
@@ -129,37 +127,21 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public void logout() {
-        isLoading.setValue(true);
-        
-        // Cerrar sesión en Firebase primero
-        FirebaseAuth.getInstance().signOut();
-        
-        // Limpiar todos los datos locales
-        userPreferences.clearUserData();
-        userPreferences.setLoggedIn(false);
-        
-        // Actualizar el estado de la UI
-        isLoggedOut.postValue(true);
-        isLoading.postValue(false);
-        errorMessage.postValue(null);
-        currentUser.postValue(null);
-        
-        Log.d(TAG, "Sesión cerrada correctamente");
+        userRepository.logout(new UserRepository.OnLogoutListener() {
+            @Override
+            public void onSuccess() {
+                isLoggedOut.postValue(true);
+            }
+
+            @Override
+            public void onError(String error) {
+                errorMessage.postValue(error);
+            }
+        });
     }
 
     public boolean isLoggedIn() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        boolean isFirebaseLoggedIn = auth.getCurrentUser() != null;
-        
-        // Sincronizar el estado con UserPreferences
-        if (isFirebaseLoggedIn != userPreferences.isLoggedIn()) {
-            userPreferences.setLoggedIn(isFirebaseLoggedIn);
-        }
-        
-        Log.d(TAG, "Estado de autenticación - Firebase: " + isFirebaseLoggedIn + 
-              ", Preferences: " + userPreferences.isLoggedIn());
-        
-        return isFirebaseLoggedIn;
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
     private void loadCurrentUser() {
@@ -168,21 +150,44 @@ public class UserViewModel extends AndroidViewModel {
             return;
         }
         
-        User user = new User();
-        user.setName(userPreferences.getName());
-        user.setEmail(userPreferences.getEmail());
-        user.setWeight(userPreferences.getWeight());
-        user.setHeight(userPreferences.getHeight());
-        user.setAge(userPreferences.getAge());
-        user.setHeartProblems(userPreferences.hasHeartProblems());
-        user.setHeartProblemsDetails(userPreferences.getHeartProblemsDetails());
-        user.setPhotoUrl(userPreferences.getProfileImageUrl());
-        currentUser.postValue(user);
+        userRepository.loadUserProfileFromFirebase(new UserRepository.OnUserLoadedListener() {
+            @Override
+            public void onUserLoaded(User user) {
+                currentUser.postValue(user);
+            }
+
+            @Override
+            public void onError(String error) {
+                errorMessage.postValue(error);
+            }
+        });
+    }
+
+    public void loadUserProfileFromFirebase(UserRepository.OnUserLoadedListener listener) {
+        userRepository.loadUserProfileFromFirebase(listener);
+    }
+
+    public void updateUserProfile(User user) {
+        userRepository.updateUserProfile(user, new UserRepository.OnProfileUpdateListener() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                currentUser.postValue(user);
+            }
+
+            @Override
+            public void onError(String error) {
+                errorMessage.postValue(error);
+            }
+
+            @Override
+            public void onProgress(double progress) {
+                uploadProgress.postValue(progress);
+            }
+        });
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        repository.cleanup();
     }
 } 

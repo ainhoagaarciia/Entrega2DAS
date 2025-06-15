@@ -8,19 +8,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import com.example.migym.R;
-import com.example.migym.utils.UserPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.migym.ui.login.LoginActivity;
 import org.jetbrains.annotations.Nullable;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-    private UserPreferences userPreferences;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Context context = requireContext();
-        userPreferences = new UserPreferences(context);
     }
 
     @Override
@@ -47,11 +42,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void handleLogout() {
-        // Clear user data
-        if (userPreferences != null) {
-            userPreferences.clearUserData();
-        }
-        
         // Sign out from Firebase
         FirebaseAuth.getInstance().signOut();
         

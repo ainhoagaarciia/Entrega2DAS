@@ -6,14 +6,12 @@ import android.util.Log;
 import com.example.migym.api.ApiClient;
 import com.example.migym.data.AppDatabase;
 import com.example.migym.utils.LocaleHelper;
-import com.example.migym.utils.UserPreferences;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 public class MiGymApplication extends Application {
     private static MiGymApplication instance;
-    private UserPreferences userPreferences;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -36,7 +34,6 @@ public class MiGymApplication extends Application {
                 .build();
             db.setFirestoreSettings(settings);
 
-            userPreferences = new UserPreferences(this);
             ApiClient.init(this);
             // Initialize the database
             AppDatabase.getInstance(this);
@@ -60,9 +57,5 @@ public class MiGymApplication extends Application {
 
     public static MiGymApplication getInstance() {
         return instance;
-    }
-
-    public UserPreferences getUserPreferences() {
-        return userPreferences;
     }
 } 

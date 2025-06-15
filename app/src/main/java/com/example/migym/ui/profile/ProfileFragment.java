@@ -47,25 +47,19 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.DataSource;
 import android.text.Editable;
 import android.text.TextWatcher;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final int PICK_IMAGE_REQUEST = 1;
     private FragmentProfileBinding binding;
-    private SharedPreferences prefs;
     private Uri selectedImageUri;
     private Uri photoURI;
     private UserRepository userRepository;
     private boolean isUploading = false;
-    private static final String PREF_PROFILE_NAME = "profile_name";
-    private static final String PREF_PROFILE_AGE = "profile_age";
-    private static final String PREF_PROFILE_WEIGHT = "profile_weight";
-    private static final String PREF_PROFILE_HEIGHT = "profile_height";
-    private static final String PREF_PROFILE_HEART_PROBLEMS = "profile_heart_problems";
-    private static final String PREF_PROFILE_HEART_DETAILS = "profile_heart_problems_details";
-    private static final String PREF_PROFILE_IMAGE_PATH = "profile_image_path";
-    private static final String PREF_PROFILE_GENDER = "profile_gender";
 
     private final ActivityResultLauncher<String> selectPicture = registerForActivityResult(
         new ActivityResultContracts.GetContent(),
@@ -123,18 +117,15 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
         try {
             userRepository = new UserRepository(requireContext());
-            prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-            
             setupClickListeners();
             setupListeners();
-            // Sincronizar con Firestore al abrir el perfil
+            // Cargar SIEMPRE los datos desde Firestore
             userRepository.loadUserProfileFromFirebase(new UserRepository.OnUserLoadedListener() {
                 @Override
                 public void onUserLoaded(com.example.migym.models.User user) {
-                    // Actualizar la UI con los datos de Firestore
+                    // Actualizar la UI SOLO con datos de Firestore
                     binding.nameInput.setText(user.getName() != null ? user.getName() : "");
                     binding.ageInput.setText(user.getAge() > 0 ? String.valueOf(user.getAge()) : "");
                     binding.weightInput.setText(user.getWeight() > 0 ? String.valueOf(user.getWeight()) : "");
@@ -143,12 +134,19 @@ public class ProfileFragment extends Fragment {
                     binding.heartProblemsSwitch.setChecked(user.hasHeartProblems());
                     binding.heartProblemsDetailsInput.setText(user.getHeartProblemsDetails() != null ? user.getHeartProblemsDetails() : "");
                     if (user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty()) {
+                        Log.d("ProfileFragment", "Cargando imagen de perfil: " + user.getPhotoUrl());
+                        Toast.makeText(requireContext(), "URL de imagen: " + user.getPhotoUrl(), Toast.LENGTH_SHORT).show();
                         Glide.with(ProfileFragment.this)
                             .load(user.getPhotoUrl())
                             .circleCrop()
                             .placeholder(R.drawable.default_profile)
                             .error(R.drawable.default_profile)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                             .into(binding.profileImage);
+                    } else {
+                        Log.d("ProfileFragment", "No hay foto de perfil, se muestra la predeterminada");
+                        binding.profileImage.setImageResource(R.drawable.default_profile);
                     }
                 }
                 @Override
@@ -156,7 +154,6 @@ public class ProfileFragment extends Fragment {
                     Log.e(TAG, "Error cargando perfil de Firestore: " + error);
                 }
             });
-            loadProfileData();
         } catch (Exception e) {
             Log.e(TAG, "Error in onViewCreated", e);
             showSnackbar(getString(R.string.error_loading_profile));
@@ -165,90 +162,18 @@ public class ProfileFragment extends Fragment {
 
     private void setupListeners() {
         if (binding == null) return;
-
-        // Eliminar el listener del botón eliminado
-        // binding.changePhotoButton.setOnClickListener(v -> {
-        //     if (!isUploading) {
-        //         showImagePickerDialog();
-        //     } else {
-        //         Toast.makeText(requireContext(), R.string.upload_in_progress, Toast.LENGTH_SHORT).show();
-        //     }
-        // });
-        
         binding.heartProblemsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             binding.heartProblemsDetailsLayout.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             saveProfileData();
         });
-
-        // Configurar listeners para el guardado automático
-        binding.nameInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                saveProfileData();
-            }
-        });
-
-        binding.ageInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                saveProfileData();
-            }
-        });
-
-        binding.weightInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                saveProfileData();
-            }
-        });
-
-        binding.heightInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                saveProfileData();
-            }
-        });
-
-        binding.heartProblemsDetailsInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                saveProfileData();
-            }
-        });
+        binding.nameInput.addTextChangedListener(new SimpleTextWatcher(this::saveProfileData));
+        binding.ageInput.addTextChangedListener(new SimpleTextWatcher(this::saveProfileData));
+        binding.weightInput.addTextChangedListener(new SimpleTextWatcher(this::saveProfileData));
+        binding.heightInput.addTextChangedListener(new SimpleTextWatcher(this::saveProfileData));
+        binding.heartProblemsDetailsInput.addTextChangedListener(new SimpleTextWatcher(this::saveProfileData));
     }
 
     private void setupClickListeners() {
-        // Al tocar la imagen, mostrar el diálogo para elegir galería o cámara
         binding.profileImage.setOnClickListener(v -> showImagePickerDialog());
     }
 
@@ -389,84 +314,88 @@ public class ProfileFragment extends Fragment {
 
     private void handleNewPhoto(Uri uri) {
         if (uri == null) {
-            Toast.makeText(requireContext(), "Error al seleccionar la imagen", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "No se ha seleccionado ninguna imagen", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        selectedImageUri = uri;
-
-        // Mostrar la imagen seleccionada inmediatamente
-        Glide.with(this)
-                .load(uri)
-                .circleCrop()
-                .placeholder(R.drawable.default_profile)
-                .error(R.drawable.default_profile)
-                .into(binding.profileImage);
-
-        // Subir la imagen al servidor
-        isUploading = true;
         binding.progressBar.setVisibility(View.VISIBLE);
-        // binding.changePhotoButton.setEnabled(false); // Eliminar referencia
+        binding.progressBar.setProgress(0);
 
         userRepository.uploadProfileImage(uri, new UserRepository.OnProfileUpdateListener() {
             @Override
             public void onSuccess(String imageUrl) {
-                requireActivity().runOnUiThread(() -> {
-                    isUploading = false;
-                    binding.progressBar.setVisibility(View.GONE);
-                    // binding.changePhotoButton.setEnabled(true); // Eliminar referencia
-
-                    // Guardar la URL de la imagen en las preferencias
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString(PREF_PROFILE_IMAGE_PATH, imageUrl);
-                    editor.apply();
-
-                    Log.d(TAG, "Image URL saved to preferences: " + imageUrl);
-
-                    // Cargar la imagen desde la URL del servidor
-                    loadProfileImageFromUrl(imageUrl);
-
-                    Toast.makeText(requireContext(), "Foto de perfil actualizada", Toast.LENGTH_SHORT).show();
+                userRepository.loadUserProfileFromFirebase(new UserRepository.OnUserLoadedListener() {
+                    @Override
+                    public void onUserLoaded(com.example.migym.models.User user) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        if (user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty()) {
+                            Log.d("ProfileFragment", "Cargando imagen de perfil: " + user.getPhotoUrl());
+                            Toast.makeText(requireContext(), "URL de imagen: " + user.getPhotoUrl(), Toast.LENGTH_SHORT).show();
+                            Glide.with(ProfileFragment.this)
+                                .load(user.getPhotoUrl())
+                                .circleCrop()
+                                .placeholder(R.drawable.default_profile)
+                                .error(R.drawable.default_profile)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(binding.profileImage);
+                        } else {
+                            Log.d("ProfileFragment", "No hay foto de perfil, se muestra la predeterminada");
+                            binding.profileImage.setImageResource(R.drawable.default_profile);
+                        }
+                        Toast.makeText(requireContext(), "Foto de perfil actualizada", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(String error) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
 
             @Override
             public void onError(String error) {
-                requireActivity().runOnUiThread(() -> {
-                    isUploading = false;
-                    binding.progressBar.setVisibility(View.GONE);
-                    // binding.changePhotoButton.setEnabled(true); // Eliminar referencia
-                    Toast.makeText(requireContext(), "Error al subir la imagen: " + error, Toast.LENGTH_SHORT).show();
-                });
+                binding.progressBar.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onProgress(double progress) {
-                requireActivity().runOnUiThread(() -> {
-                    binding.progressBar.setProgress((int) (progress * 100));
-                });
+                binding.progressBar.setProgress((int) (progress * 100));
             }
         });
     }
 
+    private void loadProfileImageFromUrl(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            binding.profileImage.setImageResource(R.drawable.default_profile);
+            return;
+        }
+
+        Glide.with(this)
+            .load(imagePath)
+            .placeholder(R.drawable.default_profile)
+            .error(R.drawable.default_profile)
+            .circleCrop()
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.profileImage);
+    }
+
     private void loadProfileData() {
-        if (binding == null || prefs == null) return;
+        if (binding == null) return;
 
         try {
-            binding.nameInput.setText(prefs.getString(PREF_PROFILE_NAME, ""));
-            binding.ageInput.setText(prefs.getString(PREF_PROFILE_AGE, ""));
-            binding.weightInput.setText(prefs.getString(PREF_PROFILE_WEIGHT, ""));
-            binding.heightInput.setText(prefs.getString(PREF_PROFILE_HEIGHT, ""));
-            // Cargar género
-            int genderIndex = prefs.getInt(PREF_PROFILE_GENDER, 0);
-            binding.genderSpinner.setSelection(genderIndex);
+            binding.nameInput.setText(binding.nameInput.getText() != null ? binding.nameInput.getText().toString().trim() : "");
+            binding.ageInput.setText(binding.ageInput.getText() != null ? binding.ageInput.getText().toString().trim() : "");
+            binding.weightInput.setText(binding.weightInput.getText() != null ? binding.weightInput.getText().toString().trim() : "");
+            binding.heightInput.setText(binding.heightInput.getText() != null ? binding.heightInput.getText().toString().trim() : "");
+            binding.genderSpinner.setSelection(binding.genderSpinner.getSelectedItemPosition());
+            binding.heartProblemsSwitch.setChecked(binding.heartProblemsSwitch.isChecked());
+            binding.heartProblemsDetailsLayout.setVisibility(binding.heartProblemsSwitch.isChecked() ? View.VISIBLE : View.GONE);
+            binding.heartProblemsDetailsInput.setText(binding.heartProblemsDetailsInput.getText() != null ? binding.heartProblemsDetailsInput.getText().toString().trim() : "");
             
-            boolean hasHeartProblems = prefs.getBoolean(PREF_PROFILE_HEART_PROBLEMS, false);
-            binding.heartProblemsSwitch.setChecked(hasHeartProblems);
-            binding.heartProblemsDetailsLayout.setVisibility(hasHeartProblems ? View.VISIBLE : View.GONE);
-            binding.heartProblemsDetailsInput.setText(prefs.getString(PREF_PROFILE_HEART_DETAILS, ""));
-            
-            String imagePath = prefs.getString(PREF_PROFILE_IMAGE_PATH, null);
+            String imagePath = binding.heartProblemsSwitch.isChecked() ? binding.heartProblemsDetailsInput.getText().toString().trim() : null;
             Log.d(TAG, "Loading profile image from path: " + imagePath);
             if (imagePath != null && !imagePath.isEmpty()) {
                 loadProfileImageFromUrl(imagePath);
@@ -489,122 +418,36 @@ public class ProfileFragment extends Fragment {
         boolean hasHeartProblems = binding.heartProblemsSwitch.isChecked();
         String heartProblemsDetails = getTextFromInput(binding.heartProblemsDetailsInput);
 
-        // Guardar los datos en SharedPreferences
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PREF_PROFILE_NAME, name);
-        editor.putString(PREF_PROFILE_AGE, ageStr);
-        editor.putString(PREF_PROFILE_WEIGHT, weightStr);
-        editor.putString(PREF_PROFILE_HEIGHT, heightStr);
-        editor.putInt(PREF_PROFILE_GENDER, genderIndex);
-        editor.putBoolean(PREF_PROFILE_HEART_PROBLEMS, hasHeartProblems);
-        editor.putString(PREF_PROFILE_HEART_DETAILS, heartProblemsDetails);
-        editor.apply();
-
-        // Guardar los datos en Firestore
-        com.example.migym.models.User user = new com.example.migym.models.User();
-        user.setName(name);
-        try { user.setAge(Integer.parseInt(ageStr)); } catch (Exception ignored) {}
-        try { user.setWeight(Double.parseDouble(weightStr)); } catch (Exception ignored) {}
-        try { user.setHeight(Double.parseDouble(heightStr)); } catch (Exception ignored) {}
-        user.setGender(genderIndex);
-        user.setHeartProblems(hasHeartProblems);
-        user.setHeartProblemsDetails(heartProblemsDetails);
-        // Si tienes email o photoUrl, añádelos aquí
-        userRepository.saveUserProfileToFirebase(user, new UserRepository.OnProfileUpdateListener() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                Log.d(TAG, "Perfil guardado en Firestore");
+        // Obtener el usuario actual para mantener el photoUrl
+        userRepository.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
+            com.example.migym.models.User user = new com.example.migym.models.User();
+            user.setName(name);
+            try { user.setAge(Integer.parseInt(ageStr)); } catch (Exception ignored) {}
+            try { user.setWeight(Double.parseDouble(weightStr)); } catch (Exception ignored) {}
+            try { user.setHeight(Double.parseDouble(heightStr)); } catch (Exception ignored) {}
+            user.setGender(genderIndex);
+            user.setHeartProblems(hasHeartProblems);
+            user.setHeartProblemsDetails(heartProblemsDetails);
+            if (currentUser != null && currentUser.getPhotoUrl() != null) {
+                user.setPhotoUrl(currentUser.getPhotoUrl());
             }
-            @Override
-            public void onError(String error) {
-                Log.e(TAG, "Error guardando perfil en Firestore: " + error);
-            }
-            @Override
-            public void onProgress(double progress) {}
-        });
-
-        // Si hay una nueva imagen seleccionada, subirla
-        if (selectedImageUri != null) {
-            isUploading = true;
-            binding.progressBar.setVisibility(View.VISIBLE);
-            // binding.changePhotoButton.setEnabled(false); // Eliminar referencia
-
-            userRepository.uploadProfileImage(selectedImageUri, new UserRepository.OnProfileUpdateListener() {
+            userRepository.saveUserProfileToFirebase(user, new UserRepository.OnProfileUpdateListener() {
                 @Override
                 public void onSuccess(String imageUrl) {
-                    requireActivity().runOnUiThread(() -> {
-                        // Guardar la URL de la imagen en las preferencias
-                        prefs.edit().putString(PREF_PROFILE_IMAGE_PATH, imageUrl).apply();
-                        
-                        // Cargar la imagen desde la URL
-                        loadProfileImageFromUrl(imageUrl);
-                        
-                        // Restaurar la UI
-                        binding.progressBar.setVisibility(View.GONE);
-                        // binding.changePhotoButton.setEnabled(true); // Eliminar referencia
-                        isUploading = false;
-                    });
+                    Log.d(TAG, "Perfil guardado en Firestore");
                 }
-
                 @Override
                 public void onError(String error) {
-                    requireActivity().runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        // binding.changePhotoButton.setEnabled(true); // Eliminar referencia
-                        isUploading = false;
-                        Toast.makeText(requireContext(), "Error al actualizar la imagen: " + error, Toast.LENGTH_SHORT).show();
-                    });
+                    Log.e(TAG, "Error guardando perfil en Firestore: " + error);
                 }
-
                 @Override
-                public void onProgress(double progress) {
-                    requireActivity().runOnUiThread(() -> {
-                        binding.progressBar.setProgress((int) (progress * 100));
-                    });
-                }
+                public void onProgress(double progress) {}
             });
-        }
+        });
     }
 
     private String getTextFromInput(TextInputEditText input) {
         return input.getText() != null ? input.getText().toString().trim() : "";
-    }
-
-    private void loadProfileImageFromUrl(String imagePath) {
-        if (imagePath == null || imagePath.isEmpty()) {
-            Log.w(TAG, "Image path is null or empty");
-            binding.profileImage.setImageResource(R.drawable.default_profile);
-            return;
-        }
-
-        Log.d(TAG, "Loading profile image from path: " + imagePath);
-
-        // Crear un File si es una ruta local
-        File imageFile = new File(imagePath);
-        Object imageSource = imagePath.startsWith("http") ? imagePath : imageFile;
-
-        Glide.with(this)
-            .load(imageSource)
-            .circleCrop()
-            .placeholder(R.drawable.default_profile)
-            .error(R.drawable.default_profile)
-            .listener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, 
-                                          Target<Drawable> target, boolean isFirstResource) {
-                    Log.e(TAG, "Error loading image from path: " + imagePath, e);
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, 
-                                             Target<Drawable> target, DataSource dataSource, 
-                                             boolean isFirstResource) {
-                    Log.d(TAG, "Image loaded successfully from path: " + imagePath);
-                    return false;
-                }
-            })
-            .into(binding.profileImage);
     }
 
     private void showSnackbar(String message) {
@@ -639,7 +482,8 @@ public class ProfileFragment extends Fragment {
 
         isUploading = true;
         binding.progressBar.setVisibility(View.VISIBLE);
-        // binding.changePhotoButton.setEnabled(false); // Eliminar referencia
+        binding.progressBar.setProgress(0);
+        binding.profileImage.setEnabled(false);
 
         // Mostrar la imagen capturada inmediatamente
         Glide.with(this)
@@ -650,21 +494,35 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onSuccess(String imageUrl) {
                 if (!isAdded()) return;
-                
                 isUploading = false;
                 binding.progressBar.setVisibility(View.GONE);
-                // binding.changePhotoButton.setEnabled(true); // Eliminar referencia
+                binding.profileImage.setEnabled(true);
 
-                // Guardar la URL de la imagen en las preferencias
-                prefs.edit().putString(PREF_PROFILE_IMAGE_PATH, imageUrl).apply();
-
-                // Cargar la imagen desde la URL del servidor
-                Glide.with(ProfileFragment.this)
-                    .load(imageUrl)
-                    .error(R.drawable.default_profile)
-                    .into(binding.profileImage);
-
-                Toast.makeText(requireContext(), R.string.profile_image_updated, Toast.LENGTH_SHORT).show();
+                // Recargar el usuario desde Firestore para obtener el photoUrl actualizado
+                userRepository.loadUserProfileFromFirebase(new UserRepository.OnUserLoadedListener() {
+                    @Override
+                    public void onUserLoaded(com.example.migym.models.User user) {
+                        if (user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty()) {
+                            Log.d(TAG, "Cargando imagen de perfil: " + user.getPhotoUrl());
+                            Glide.with(ProfileFragment.this)
+                                .load(user.getPhotoUrl())
+                                .circleCrop()
+                                .placeholder(R.drawable.default_profile)
+                                .error(R.drawable.default_profile)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(binding.profileImage);
+                        } else {
+                            Log.d(TAG, "No hay foto de perfil, se muestra la predeterminada");
+                            binding.profileImage.setImageResource(R.drawable.default_profile);
+                        }
+                        Toast.makeText(requireContext(), R.string.profile_image_updated, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -673,14 +531,55 @@ public class ProfileFragment extends Fragment {
                 
                 isUploading = false;
                 binding.progressBar.setVisibility(View.GONE);
-                // binding.changePhotoButton.setEnabled(true); // Eliminar referencia
-                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show();
+                binding.profileImage.setEnabled(true);
+                
+                // Mostrar mensaje de error
+                Snackbar.make(requireView(), error, Snackbar.LENGTH_LONG)
+                    .setAction("Reintentar", v -> uploadProfileImage())
+                    .show();
             }
 
             @Override
             public void onProgress(double progress) {
                 if (!isAdded()) return;
                 binding.progressBar.setProgress((int)(progress * 100));
+            }
+        });
+    }
+
+    // SimpleTextWatcher para ahorrar código
+    private static class SimpleTextWatcher implements android.text.TextWatcher {
+        private final Runnable callback;
+        SimpleTextWatcher(Runnable callback) { this.callback = callback; }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void afterTextChanged(android.text.Editable s) { callback.run(); }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        userRepository.loadUserProfileFromFirebase(new UserRepository.OnUserLoadedListener() {
+            @Override
+            public void onUserLoaded(com.example.migym.models.User user) {
+                Log.d("ProfileFragment", "Recargando usuario en onResume: " + user.getPhotoUrl());
+                if (user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty()) {
+                    Glide.with(ProfileFragment.this)
+                        .load(user.getPhotoUrl())
+                        .circleCrop()
+                        .placeholder(R.drawable.default_profile)
+                        .error(R.drawable.default_profile)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(binding.profileImage);
+                } else {
+                    Log.d("ProfileFragment", "No hay foto de perfil en onResume, se muestra la predeterminada");
+                    binding.profileImage.setImageResource(R.drawable.default_profile);
+                }
+            }
+            @Override
+            public void onError(String error) {
+                Log.e("ProfileFragment", "Error recargando usuario: " + error);
             }
         });
     }

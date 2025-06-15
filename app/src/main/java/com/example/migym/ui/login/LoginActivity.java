@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.example.migym.utils.UserPreferences;
 import com.example.migym.MiGymApplication;
 
 public class LoginActivity extends AppCompatActivity {
@@ -160,8 +159,7 @@ public class LoginActivity extends AppCompatActivity {
     private void navigateToMain() {
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-            UserPreferences userPreferences = ((MiGymApplication) getApplication()).getUserPreferences();
-            userPreferences.saveUserData(user.getUid(), user.getEmail(), user.getDisplayName());
+            // Línea eliminada: ((MiGymApplication) getApplication()).getUserPreferences().saveUserData(user.getUid(), user.getEmail(), user.getDisplayName());
         }
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
